@@ -1,16 +1,18 @@
 package com.bobnono.popularmovies.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bobnono.popularmovies.data.MoviePreferences;
 import com.bobnono.popularmovies.utilties.DateUtils;
 
-import java.io.Serializable;
 import java.util.Calendar;
 
 /**
  * Created by user on 2017-06-25.
  */
 
-public class MovieModel implements Serializable {
+public class MovieModel implements Parcelable {
     private int id;
     private String title;
     private String poster_path;
@@ -20,6 +22,9 @@ public class MovieModel implements Serializable {
 
     public static final String MDBDateFormat = "yyyy-MM-dd";
     public static final String MDBMaximumRating = "10";
+
+    // No-arg Ctor
+    public MovieModel(){}
 
     public void setId(int id){
         this.id = id;
@@ -57,5 +62,41 @@ public class MovieModel implements Serializable {
 
     public String getRating(){
         return Double.toString(getVoteAverage()) + "/" + MDBMaximumRating;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flag) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(poster_path);
+        dest.writeDouble(vote_average);
+        dest.writeString(overview);
+        dest.writeString(DateUtils.calendarToString(release_date, MDBDateFormat));
+
+    }
+
+    /** Static field used to regenerate object, individually or as arrays */
+    public static final Parcelable.Creator<MovieModel> CREATOR = new Parcelable.Creator<MovieModel>() {
+        public MovieModel createFromParcel(Parcel pc) {
+            return new MovieModel(pc);
+        }
+        public MovieModel[] newArray(int size) {
+            return new MovieModel[size];
+        }
+    };
+
+    /**Ctor from Parcel, reads back fields IN THE ORDER they were written */
+    public MovieModel(Parcel in){
+        id = in.readInt();
+        title = in.readString();
+        poster_path = in.readString();
+        vote_average = in.readDouble();
+        overview = in.readString();
+        release_date = DateUtils.stringToCalendar(in.readString(), MDBDateFormat);
     }
 }

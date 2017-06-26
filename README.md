@@ -1,5 +1,9 @@
 # Popular_Movies
 Popular Movies Stage 1, first Project of Udacity Developer Fast Track Program
 
-Modify API_KEY of "Movie Database API version 3" in file "com.bobnono.popularmovies\data\MoviePreferences.java in constant 
-"private static final String API_KEY_V3"
+I have remove API KEY from Java program code.
+
+Now the key is stored in gradle.properties :
+MyMovieDBApiKey="my_key"
+
+I put gradle.properties in .gitignore file so that it won't be pushed in GitHub repo.

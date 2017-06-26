@@ -20,14 +20,17 @@ import com.bobnono.popularmovies.model.MovieModel;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity
         implements MoviesAdapter.MoviesAdapterHandler, FetchMovieTask.FetchMoviesTaskHandler{
 
-    private RecyclerView mRecyclerView;
     private MoviesAdapter mMoviesAdapter;
 
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
+    @BindView(R.id.rv_movies) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
     private MoviePreferences.RequestType mSortOrder = MoviePreferences.RequestType.REQUEST_POP;
 
@@ -43,10 +46,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
-//After restore gradle.properties
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
 
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
+        ButterKnife.bind(this);
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             mRecyclerView.setLayoutManager(new GridLayoutManager(this, NUM_OF_GRID_COLUMN_IN_PORTRAIT));
@@ -59,8 +60,6 @@ public class MainActivity extends AppCompatActivity
 
         mMoviesAdapter = new MoviesAdapter(MainActivity.this, this);
         mRecyclerView.setAdapter(mMoviesAdapter);
-
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         actionBar = getSupportActionBar();
         actionBar.setTitle(getString(R.string.sort_by_pop));
@@ -126,10 +125,8 @@ public class MainActivity extends AppCompatActivity
 
     void showMovieDetail(MovieModel movie){
         Intent intent = new Intent(this, MovieDetailsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MOVIE_BUNDLE, movie);
 
-        intent.putExtras(bundle);
+        intent.putExtra(MOVIE_BUNDLE, movie);
 
         startActivity(intent);
     }
