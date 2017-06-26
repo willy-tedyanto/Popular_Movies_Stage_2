@@ -1,12 +1,13 @@
 package com.bobnono.popularmovies;
 
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,13 +17,13 @@ import android.widget.TextView;
 
 import com.bobnono.popularmovies.data.MoviePreferences;
 import com.bobnono.popularmovies.model.MovieModel;
-import com.bobnono.popularmovies.utilties.MovieDBJsonUtils;
-import com.bobnono.popularmovies.utilties.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterHandler{
+public class MainActivity extends AppCompatActivity
+        implements MoviesAdapter.MoviesAdapterHandler, FetchMovieTask.FetchMoviesTaskHandler{
+
     private RecyclerView mRecyclerView;
     private MoviesAdapter mMoviesAdapter;
 
@@ -36,17 +37,27 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private final String TAG = "MainActivity";
     private ActionBar actionBar;
 
+    final int NUM_OF_GRID_COLUMN_IN_PORTRAIT = 2;
+    final int NUM_OF_GRID_COLUMN_IN_LANDSCAPE = 4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
 
+        Log.e(TAG, "KEy : " + BuildConfig.OPEN_WEATHER_MAP_API_KEY);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        int numOfColumns = 2;
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, numOfColumns));
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, NUM_OF_GRID_COLUMN_IN_PORTRAIT));
+        }
+        else{
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, NUM_OF_GRID_COLUMN_IN_LANDSCAPE));
+        }
+
         mRecyclerView.setHasFixedSize(true);
 
         mMoviesAdapter = new MoviesAdapter(MainActivity.this, this);
@@ -113,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         showMoviesDataView();
 
         URL url = MoviePreferences.getURLData(mSortOrder, "");
-        new FetchMoviesTask(url, mSortOrder).execute();
+        new FetchMovieTask(this, url, mSortOrder, mLoadingIndicator).execute();
     }
 
     void showMovieDetail(MovieModel movie){
@@ -126,50 +137,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         startActivity(intent);
     }
 
-    public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<MovieModel>> {
-        private URL url;
-        private MoviePreferences.RequestType requestType;
-
-        FetchMoviesTask(URL url, MoviePreferences.RequestType requestType){
-            this.url = url;
-            this.requestType = requestType;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected ArrayList<MovieModel> doInBackground(Void... params) {
-            try {
-                String jsonMoviesResponse = NetworkUtils
-                        .getResponseFromHttpUrl(this.url);
-
-                ArrayList<MovieModel> moviesList = MovieDBJsonUtils
-                        .getMovieListsFromJson(jsonMoviesResponse, this.requestType);
-
-                return moviesList;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<MovieModel> moviesList) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (moviesList != null) {
-                showMoviesDataView();
-                mMoviesAdapter.setMoviesData(moviesList);
-            } else {
-                showErrorMessage();
-            }
-        }
-    }
-
     private void showErrorMessage() {
         /* First, hide the currently visible data */
         mRecyclerView.setVisibility(View.INVISIBLE);
@@ -180,5 +147,16 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     void showMoviesDataView(){
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onFetchMoviesSucceed(ArrayList<MovieModel> moviesList) {
+        showMoviesDataView();
+        mMoviesAdapter.setMoviesData(moviesList);
+    }
+
+    @Override
+    public void onFetchMoviesError() {
+        showErrorMessage();
     }
 }
