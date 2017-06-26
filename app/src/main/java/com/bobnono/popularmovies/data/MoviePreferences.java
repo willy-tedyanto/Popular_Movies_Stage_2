@@ -15,7 +15,7 @@ public class MoviePreferences {
 
     private static final String DATA_BASE_URL = "http://api.themoviedb.org/3/movie";
     private static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p";
-    private static final String API_KEY_V3 = "YOUR_KEY_HERE";
+    private static final String API_KEY_V3 = "5587113522289175ea68f9b85ed3ea23";
     private static final String KEY_PARAM = "api_key";
 
     private static final String POSTER_SIZE = "w185";
