@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">Popular Movies</string>
+
+    <string name="error_message">
+        An error has occurred. Please try again by clicking REFRESH
+    </string>
+
+    <string name="sort_by_pop">Pop Movies</string>
+    <string name="sort_by_top_rated">Top Rated Movies</string>
+
+</resources>
