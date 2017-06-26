@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,9 +43,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
-
-        Log.e(TAG, "KEy : " + BuildConfig.OPEN_WEATHER_MAP_API_KEY);
-
+//After restore gradle.properties
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
