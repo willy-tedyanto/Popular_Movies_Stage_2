@@ -1,4 +1,4 @@
-package com.bobnono.popularmovies.utilties;
+package com.bobnono.popularmovies.utilities;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

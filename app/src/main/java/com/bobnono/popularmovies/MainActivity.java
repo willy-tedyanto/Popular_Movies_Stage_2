@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.bobnono.popularmovies.data.MoviePreferences;
 import com.bobnono.popularmovies.model.MovieModel;
-import com.bobnono.popularmovies.utilties.GeneralUtils;
+import com.bobnono.popularmovies.utilities.GeneralUtils;
 
 import java.net.URL;
 import java.util.ArrayList;

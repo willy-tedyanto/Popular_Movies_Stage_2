@@ -6,8 +6,8 @@ import android.widget.ProgressBar;
 
 import com.bobnono.popularmovies.data.MoviePreferences;
 import com.bobnono.popularmovies.model.MovieModel;
-import com.bobnono.popularmovies.utilties.MovieDBJsonUtils;
-import com.bobnono.popularmovies.utilties.NetworkUtils;
+import com.bobnono.popularmovies.utilities.MovieDBJsonUtils;
+import com.bobnono.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;

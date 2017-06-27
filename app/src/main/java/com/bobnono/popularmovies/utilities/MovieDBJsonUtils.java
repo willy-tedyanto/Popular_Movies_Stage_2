@@ -1,4 +1,4 @@
-package com.bobnono.popularmovies.utilties;
+package com.bobnono.popularmovies.utilities;
 
 import com.bobnono.popularmovies.data.MoviePreferences;
 import com.bobnono.popularmovies.model.MovieModel;

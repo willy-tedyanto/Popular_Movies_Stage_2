@@ -1,4 +1,4 @@
-package com.bobnono.popularmovies.utilties;
+package com.bobnono.popularmovies.utilities;
 
 import android.util.Log;
 
