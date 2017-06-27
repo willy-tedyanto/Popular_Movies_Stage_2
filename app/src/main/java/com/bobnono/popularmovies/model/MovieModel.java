@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.bobnono.popularmovies.data.MoviePreferences;
-import com.bobnono.popularmovies.utilties.DateUtils;
+import com.bobnono.popularmovies.utilities.DateUtils;
 
 import java.util.Calendar;
 

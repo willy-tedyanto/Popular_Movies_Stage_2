@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bobnono.popularmovies.model.MovieModel;
-import com.bobnono.popularmovies.utilties.DateUtils;
+import com.bobnono.popularmovies.utilities.DateUtils;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
