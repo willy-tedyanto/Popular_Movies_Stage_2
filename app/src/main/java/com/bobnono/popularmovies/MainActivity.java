@@ -1,7 +1,6 @@
 package com.bobnono.popularmovies;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 
 import com.bobnono.popularmovies.data.MoviePreferences;
 import com.bobnono.popularmovies.model.MovieModel;
+import com.bobnono.popularmovies.utilties.GeneralUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,8 +39,9 @@ public class MainActivity extends AppCompatActivity
     private final String TAG = "MainActivity";
     private ActionBar actionBar;
 
-    final int NUM_OF_GRID_COLUMN_IN_PORTRAIT = 2;
-    final int NUM_OF_GRID_COLUMN_IN_LANDSCAPE = 4;
+    final int GRID_SCALING_FACTOR = 180;
+
+    static final String KEY_MOVIE_SORT_BY = "movie_sort_by";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +50,8 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this, NUM_OF_GRID_COLUMN_IN_PORTRAIT));
-        }
-        else{
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this, NUM_OF_GRID_COLUMN_IN_LANDSCAPE));
-        }
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this,
+                GeneralUtils.calculateNoOfColumns(this, GRID_SCALING_FACTOR)));
 
         mRecyclerView.setHasFixedSize(true);
 
@@ -62,16 +59,30 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mMoviesAdapter);
 
         actionBar = getSupportActionBar();
-        actionBar.setTitle(getString(R.string.sort_by_pop));
 
-        loadMoviesData();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem menuItem;
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-        menu.findItem(R.id.action_sort_pop).setChecked(true);
+
+        int sortBy = GeneralUtils.readSharedPreferences(this,
+                KEY_MOVIE_SORT_BY,
+                MoviePreferences.RequestType.REQUEST_POP.ordinal());
+
+        if (sortBy == MoviePreferences.RequestType.REQUEST_POP.ordinal()) {
+            menuItem = menu.findItem(R.id.action_sort_pop);
+            menuItem.setChecked(true);
+        }
+        else{
+            menuItem = menu.findItem(R.id.action_sort_top_rated);
+            menuItem.setChecked(true);
+        }
+
+        onOptionsItemSelected(menuItem);
 
         return true;
     }
@@ -82,25 +93,33 @@ public class MainActivity extends AppCompatActivity
 
         switch (id){
             case R.id.action_sort_pop:
-                if (mSortOrder != MoviePreferences.RequestType.REQUEST_POP){
+  //              if (mSortOrder != MoviePreferences.RequestType.REQUEST_POP){
 
                     mSortOrder = MoviePreferences.RequestType.REQUEST_POP;
 
                     actionBar.setTitle(getString(R.string.sort_by_pop));
 
+                    GeneralUtils.writeSharedPreference(this,
+                            KEY_MOVIE_SORT_BY,
+                            MoviePreferences.RequestType.REQUEST_POP.ordinal());
+
                     loadMoviesData();
 
-                }
+//                }
                 break;
             case R.id.action_sort_top_rated:
-                if (mSortOrder != MoviePreferences.RequestType.REQUEST_TOP_RATED){
+//                if (mSortOrder != MoviePreferences.RequestType.REQUEST_TOP_RATED){
 
                     mSortOrder = MoviePreferences.RequestType.REQUEST_TOP_RATED;
 
                     actionBar.setTitle(getString(R.string.sort_by_top_rated));
 
+                    GeneralUtils.writeSharedPreference(this,
+                            KEY_MOVIE_SORT_BY,
+                            MoviePreferences.RequestType.REQUEST_TOP_RATED.ordinal());
+
                     loadMoviesData();
-                }
+//                }
                 break;
         }
         item.setChecked(true);
