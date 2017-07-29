@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bobnono.popularmovies.model.MovieModel;
+import com.bobnono.popularmovies.utilities.MoviePreferences;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -47,13 +49,30 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     @Override
     public void onBindViewHolder(MoviesAdapterViewHolder holder, int position) {
+        Boolean isFavorite = true;
 
-        Picasso.with(mContext)
-                .load(mMovies.get(position).getPosterPath())
-                .placeholder(R.drawable.ic_local_movies_blue_24dp)
-                .error(R.drawable.ic_error_red_24dp)
-                .into(holder.mMovieImageView);
+        if (mMovies.get(position).getIsFavorite() == null || !mMovies.get(position).getIsFavorite()){
+            isFavorite = false;
+        }
 
+        if (isFavorite) {
+            File f = new File(MoviePreferences.POSTER_LOCAL_STORAGE_DIR
+                    + "/" + mContext.getString(R.string.favorite_movie_image_folder)
+                    + "/" + mMovies.get(position).getId()
+                    + mContext.getString(R.string.image_poster_file_extension));
+
+            Picasso.with(mContext)
+                    .load(f)
+                    .placeholder(R.drawable.ic_local_movies_blue_24dp)
+                    .error(R.drawable.ic_error_red_24dp)
+                    .into(holder.mMovieImageView);
+        } else {
+            Picasso.with(mContext)
+                    .load(mMovies.get(position).getPosterPath())
+                    .placeholder(R.drawable.ic_local_movies_blue_24dp)
+                    .error(R.drawable.ic_error_red_24dp)
+                    .into(holder.mMovieImageView);
+        }
     }
 
     @Override
@@ -82,8 +101,26 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         }
     }
 
+    public int getMoviesCount(){
+        return mMovies.size();
+    }
+
+    public ArrayList<MovieModel> getMoviesData(){
+        return mMovies;
+    }
+
     public void setMoviesData(ArrayList<MovieModel> movies){
-        mMovies = movies;
+        if (movies == null){
+            mMovies = null;
+        }
+        else {
+            if (mMovies == null){
+                mMovies = movies;
+            }
+            else {
+                mMovies.addAll(movies);
+            }
+        }
         notifyDataSetChanged();
     }
 }

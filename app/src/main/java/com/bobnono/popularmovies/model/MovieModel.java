@@ -3,7 +3,7 @@ package com.bobnono.popularmovies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.bobnono.popularmovies.data.MoviePreferences;
+import com.bobnono.popularmovies.utilities.MoviePreferences;
 import com.bobnono.popularmovies.utilities.DateUtils;
 
 import java.util.Calendar;
@@ -19,6 +19,7 @@ public class MovieModel implements Parcelable {
     private Double vote_average;
     private String overview;
     private Calendar release_date;
+    private Boolean is_favorite;
 
     public static final String MDBDateFormat = "yyyy-MM-dd";
     public static final String MDBMaximumRating = "10";
@@ -62,6 +63,14 @@ public class MovieModel implements Parcelable {
 
     public String getRating(){
         return Double.toString(getVoteAverage()) + "/" + MDBMaximumRating;
+    }
+
+    public void setIsFavorite(Boolean is_favorite){
+        this.is_favorite = is_favorite;
+    }
+
+    public Boolean getIsFavorite(){
+        return this.is_favorite;
     }
 
     @Override
