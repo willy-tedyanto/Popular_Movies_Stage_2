@@ -1,5 +1,5 @@
 # Popular_Movies
-Popular Movies Stage 1, first Project of Udacity Developer Fast Track Program
+Popular Movies Stage 2, first Project of Udacity Developer Fast Track Program
 
 I have remove API KEY from Java program code.
 
